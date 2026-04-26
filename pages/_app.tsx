@@ -7,6 +7,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ReduxProvider, store } from '@/store';
 import * as authActions from '@/store/actions/authActions';
 import { theme } from '@/styles/theme';
+import '@/services/mockUtils'; // Initialize mock utilities
 import '@/styles/globals.css';
 
 function AppWrapper({ Component, pageProps }: AppProps) {

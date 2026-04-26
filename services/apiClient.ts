@@ -1,8 +1,8 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
-import * as mockData from './mockData';
+import { mockDataFactory } from './mockDataFactory';
+import { isMockDataEnabled } from './mockConfig';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
-const USE_MOCK_DATA = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -12,18 +12,19 @@ const apiClient: AxiosInstance = axios.create({
 });
 
 // Mock interceptor - intercepts requests and returns mock data
-if (USE_MOCK_DATA) {
+if (isMockDataEnabled()) {
   apiClient.interceptors.response.use(
     (response) => response,
     async (error) => {
       const config = error.config as InternalAxiosRequestConfig;
       const url = config.url || '';
       const method = config.method?.toUpperCase();
+      const userId = '1'; // Single user profile
 
       // Mock login
       if (url.includes('/auth/login') && method === 'POST') {
         return {
-          data: mockData.mockAuthResponse,
+          data: mockDataFactory.generateMockAuthResponse(userId),
           status: 200,
           statusText: 'OK',
           headers: {},
@@ -34,7 +35,7 @@ if (USE_MOCK_DATA) {
       // Mock register
       if (url.includes('/auth/register') && method === 'POST') {
         return {
-          data: mockData.mockAuthResponse,
+          data: mockDataFactory.generateMockAuthResponse(userId),
           status: 200,
           statusText: 'OK',
           headers: {},
@@ -45,7 +46,7 @@ if (USE_MOCK_DATA) {
       // Mock get profile
       if (url.includes('/users/profile') && method === 'GET') {
         return {
-          data: mockData.mockUser,
+          data: mockDataFactory.generateMockUser(userId),
           status: 200,
           statusText: 'OK',
           headers: {},
@@ -56,7 +57,7 @@ if (USE_MOCK_DATA) {
       // Mock fetch metrics
       if (url.includes('/health-metrics') && method === 'GET') {
         return {
-          data: mockData.mockMetrics,
+          data: mockDataFactory.generateMockMetrics(userId),
           status: 200,
           statusText: 'OK',
           headers: {},
@@ -67,7 +68,7 @@ if (USE_MOCK_DATA) {
       // Mock fetch goals
       if (url.includes('/health-goals') && method === 'GET') {
         return {
-          data: mockData.mockGoals,
+          data: mockDataFactory.generateMockGoals(userId),
           status: 200,
           statusText: 'OK',
           headers: {},
@@ -78,8 +79,8 @@ if (USE_MOCK_DATA) {
       // Mock create goal
       if (url.includes('/health-goals') && method === 'POST') {
         const newGoal = {
-          goal_id: String(mockData.mockGoals.length + 1),
-          user_id: '1',
+          goal_id: `${userId}_${Date.now()}`,
+          user_id: userId,
           ...config.data,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
@@ -96,7 +97,7 @@ if (USE_MOCK_DATA) {
       // Mock fetch alerts
       if (url.includes('/health-alerts') && method === 'GET') {
         return {
-          data: mockData.mockAlerts,
+          data: mockDataFactory.generateMockAlerts(userId),
           status: 200,
           statusText: 'OK',
           headers: {},
@@ -107,7 +108,7 @@ if (USE_MOCK_DATA) {
       // Mock fetch services
       if (url.includes('/health-services') && method === 'GET') {
         return {
-          data: mockData.mockServices,
+          data: mockDataFactory.generateMockServices(userId),
           status: 200,
           statusText: 'OK',
           headers: {},
@@ -144,7 +145,7 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (USE_MOCK_DATA) return Promise.reject(error);
+    if (isMockDataEnabled()) return Promise.reject(error);
 
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
