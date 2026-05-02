@@ -19,7 +19,7 @@ export interface HealthGoal {
   unit: string;
   target_unit_period: 'daily' | 'weekly' | 'monthly';
   start_date: string;
-  end_date?: string;
+  end_date?: string | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -36,6 +36,10 @@ export interface HealthAlert {
   notification_type: 'email' | 'webhook' | 'in_app';
   created_at: string;
   updated_at: string;
+  goal_id: string;
+  alert_type: string;
+  message: string;
+  is_triggered: boolean;
 }
 
 export interface HealthService {
@@ -48,6 +52,8 @@ export interface HealthService {
   sync_frequency: 'real-time' | 'hourly' | 'daily';
   created_at: string;
   updated_at: string;
+  access_token?: string;
+  refresh_token?: string | null;
 }
 
 export interface HealthMetricsState {

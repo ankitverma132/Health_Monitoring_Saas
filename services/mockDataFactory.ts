@@ -162,6 +162,12 @@ export function generateMockAlerts(userId: string = '1'): HealthAlert[] {
       is_triggered: false,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
+      alert_name: '',
+      metric_type: '',
+      condition: 'greater_than',
+      threshold_value: 0,
+      is_active: false,
+      notification_type: 'email'
     },
     {
       alert_id: `${userId}_2`,
@@ -172,6 +178,12 @@ export function generateMockAlerts(userId: string = '1'): HealthAlert[] {
       is_triggered: false,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
+      alert_name: '',
+      metric_type: '',
+      condition: 'greater_than',
+      threshold_value: 0,
+      is_active: false,
+      notification_type: 'email'
     },
   ];
 }
@@ -190,7 +202,7 @@ export function generateMockServices(userId: string = '1'): HealthService[] {
       last_sync_time: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
       sync_frequency: 'hourly',
       created_at: new Date(Date.now() - 1000 * 60 * 60 * 24 * 90).toISOString(),
-      updated_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     },
     {
       service_id: `${userId}_2`,
@@ -203,7 +215,7 @@ export function generateMockServices(userId: string = '1'): HealthService[] {
       last_sync_time: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
       sync_frequency: 'real-time',
       created_at: new Date(Date.now() - 1000 * 60 * 60 * 24 * 60).toISOString(),
-      updated_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     },
   ];
 }
