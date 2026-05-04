@@ -2,10 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: health-monitoring-frontend
+  namespace: health-app-dev
   labels:
     app: health-monitoring-frontend
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: health-monitoring-frontend
@@ -22,7 +23,7 @@ spec:
             - containerPort: 3000
           env:
             - name: NODE_ENV
-              value: "production"
+              value: "non-production"
           resources:
             requests:
               memory: "256Mi"
